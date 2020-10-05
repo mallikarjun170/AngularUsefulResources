@@ -1,0 +1,82 @@
+<mat-card >
+  <mat-form-field>
+    <mat-label>Query</mat-label>
+    <mat-select disableOptionCentering [disabled]="loading" [(value)]="request.query" (selectionChange)="setTypes()">
+      <mat-option *ngFor="let query of queries" [value]="query">{{query}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <!-- <mat-form-field class="input-wide">
+    <input type="text"
+         placeholder="{{getSelectedItems()}}"
+         aria-label="Number"
+         required
+         matInput
+         (mouseover)="filterChanged($event.target.value)"
+         [matAutocomplete]="auto">
+    <mat-autocomplete panelWidth="320px" autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option disabled>Categories</mat-option>
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+          <button mat-icon-button disabled></button>
+          <mat-checkbox class="checklist-leaf-node" [checked]="checklistSelection.isSelected(node)"
+            (change)="noteTypeLeafItemSelectionToggle(node)">{{node.item}}</mat-checkbox>
+        </mat-tree-node>
+
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle
+          [attr.aria-label]="'toggle ' + node.filename">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <mat-checkbox [checked]="descendantsAllSelected(node)"
+            [indeterminate]="descendantsPartiallySelected(node)"
+            (change)="noteTypeItemSelectionToggle(node)">
+            {{node.item}}</mat-checkbox>
+        </mat-tree-node>
+      </mat-tree>
+    </mat-autocomplete>
+  </mat-form-field> -->
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <mat-select disableOptionCentering [disabled]="loading" [(value)]="request.entityType" (selectionChange)="request.entityID = undefined">
+      <mat-option *ngFor="let type of types" [value]="type">{{type}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div [ngSwitch]="request.entityType" style="display: inline-block;">
+    <mat-form-field *ngSwitchCase="'Group'" class="input-wide">
+      <mat-label>{{request.entityType}}</mat-label>
+      <mat-select disableOptionCentering [(value)]="request.entityID" (selectionChange)="query($event)" [disabled]="loading">
+        <mat-option *ngFor="let group of groups" [value]="group.groupID">{{group.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngSwitchCase="'Driver'" class="input-wide">
+      <mat-label>{{request.entityType}}</mat-label>
+      <mat-select disableOptionCentering [(value)]="request.entityID" (selectionChange)="query($event)" [disabled]="loading">
+        <mat-option *ngFor="let driver of drivers" [value]="driver.driverID">{{driver.first}} {{driver.last}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngSwitchCase="'Vehicle'" class="input-wide">
+      <mat-label>{{request.entityType}}</mat-label>
+      <mat-select disableOptionCentering [(value)]="request.entityID" (selectionChange)="query($event)" [disabled]="loading">
+        <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.vehicleID">{{vehicle.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <mat-form-field>
+    <mat-label>Start Date</mat-label>
+    <input matInput [matDatepicker]="start" (dateChange)="onStartChange($event)" [disabled]="loading">
+    <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
+    <mat-datepicker #start></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>End Date</mat-label>
+    <input matInput [matDatepicker]="end" (dateChange)="onEndChange($event)" [disabled]="loading">
+    <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+    <mat-datepicker #end></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field id="search">
+    <mat-label>Filter</mat-label>
+    <input matInput type="search" [value]="filter" (keyup)="onFilterChange($event)">
+  </mat-form-field>
+</mat-card>
